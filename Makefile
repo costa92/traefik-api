@@ -19,3 +19,10 @@ local/build:
 prod/build:
 	docker build -q -t $(TCR_IMAGE_LOCAL):$(TAG) .
 	docker push $(TCR_IMAGE_LOCAL):$(TAG)
+
+
+fmt:
+	@gofumpt -version || go install mvdan.cc/gofumpt@latest
+	gofumpt -extra -w -d .
+	@gci -v || go install github.com/daixiang0/gci@latest
+	gci write -s standard -s default -s 'Prefix($(GO_MOD_DOMAIN))' --skip-generated .
