@@ -9,10 +9,10 @@ TCR_HOST ?= $(TCR_HOST_LOCAL)
 
 TCR_IMAGE_LOCAL := $(TCR_HOST)/$(shell echo $(PROJECT_NAME) | sed 's^\/^\/local\/^')
 
- LOCAL_TAG := "local-"$(NOW)
+LOCAL_TAG := "local-"$(NOW)
 TAG := $(shell git describe --always --tags --abbrev=0 --match 'v*' --exclude '*/*' | tr -d "[\r\n]")
+
 .PHONY: build
-#
 local/build:
 	docker build -q -t $(TCR_IMAGE_LOCAL):$(LOCAL_TAG) .
 #
