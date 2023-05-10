@@ -13,14 +13,15 @@ LOCAL_TAG := "local-"$(NOW)
 TAG := $(shell git describe --always --tags --abbrev=0 --match 'v*' --exclude '*/*' | tr -d "[\r\n]")
 
 .PHONY: build
+# 构建本地
 local/build:
 	docker build -q -t $(TCR_IMAGE_LOCAL):$(LOCAL_TAG) .
-#
+# 构建正式tag
 prod/build:
 	docker build -q -t $(TCR_IMAGE_LOCAL):$(TAG) .
 	docker push $(TCR_IMAGE_LOCAL):$(TAG)
 
-
+# 代码格式化
 fmt:
 	@gofumpt -version || go install mvdan.cc/gofumpt@latest
 	gofumpt -extra -w -d .
