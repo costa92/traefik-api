@@ -10,10 +10,12 @@ TCR_HOST ?= $(TCR_HOST_LOCAL)
 TCR_IMAGE_LOCAL := $(TCR_HOST)/$(shell echo $(PROJECT_NAME) | sed 's^\/^\/local\/^')
 
  LOCAL_TAG := "local-"$(NOW)
-#TAG := $(shell git describe --always --tags --abbrev=0 --match 'v*' --exclude '*/*' | tr -d "[\r\n]")
+TAG := $(shell git describe --always --tags --abbrev=0 --match 'v*' --exclude '*/*' | tr -d "[\r\n]")
 .PHONY: build
+#
 local/build:
 	docker build -q -t $(TCR_IMAGE_LOCAL):$(LOCAL_TAG) .
-
-build:
-	docker build -q -t $(TCR_IMAGE_LOCAL):$(LOCAL_TAG) .
+#
+prod/build:
+	docker build -q -t $(TCR_IMAGE_LOCAL):$(TAG) .
+	docker push $(TCR_IMAGE_LOCAL):$(TAG)
