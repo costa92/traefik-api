@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net"
 	"net/http"
@@ -38,6 +39,9 @@ func main() {
 		log.Printf("ip:%s", ip)
 		writer.Write([]byte("start traefik v2"))
 	})
+
+	http.Handle("/metrics", promhttp.Handler())
+
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
