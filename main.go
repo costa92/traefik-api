@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// https://cloud.tencent.com/document/product/1416/56033
 // GetIP returns request real ip.
 func GetIP(r *http.Request) (string, error) {
 	ip := r.Header.Get("X-Real-IP")
