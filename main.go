@@ -2,11 +2,14 @@ package main
 
 import (
 	"errors"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // https://cloud.tencent.com/document/product/1416/56033
@@ -32,7 +35,24 @@ func GetIP(r *http.Request) (string, error) {
 	return "", errors.New("no valid ip found")
 }
 
+var (
+	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "myapp_processed_ops_total",
+		Help: "The total number of processed events",
+	})
+)
+
+func recordMetrics() {
+	go func() {
+		for {
+			opsProcessed.Inc()
+			time.Sleep(2 * time.Second)
+		}
+	}()
+}
+
 func main() {
+	recordMetrics()
 	// 写一个启动 http 服务代码
 	http.HandleFunc("/traefik", func(writer http.ResponseWriter, request *http.Request) {
 		log.Println("start traefik v2")
