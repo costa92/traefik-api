@@ -14,7 +14,7 @@ import (
 	"treafik-api/pkg/server"
 )
 
-func GenericEngineServer(serverConfig *config.Server) *gin.Engine {
+func GenericEngineServer(serverConfig *server.ServiceConfig) *gin.Engine {
 	gin.ForceConsoleColor()
 	if serverConfig.Mode == "" {
 		serverConfig.Mode = gin.DebugMode
@@ -33,26 +33,25 @@ type AppServer struct {
 	Logger       logger.Logger
 	Engine       *gin.Engine
 
-	timeout      time.Duration
-	secureServer *http.Server
-	middleware   []string
+	timeout       time.Duration
+	secureServer  *http.Server
+	serviceConfig *server.ServiceConfig
+	middleware    []string
 }
 
-func NewAppServer(cfg *config.Config, opts ...ServerOption) server.IAppServer {
-	appSrv := &AppServer{
-		GlobalConfig: cfg,
-		Engine:       GenericEngineServer(&cfg.Server),
-	}
+func NewAppServer(opts ...ServerOption) server.IAppServer {
+	appSrv := &AppServer{}
 	for _, o := range opts {
 		o(appSrv)
 	}
+	appSrv.Engine = GenericEngineServer(appSrv.serviceConfig)
+	appSrv.Healthz()
 	appSrv.InstallMiddlewares()
-	appSrv.Run()
 	return appSrv
 }
 
 func (s *AppServer) InstallMiddlewares() {
-	for _, m := range s.GlobalConfig.Server.Middlewares {
+	for _, m := range s.middleware {
 		mw, ok := middlewares.Middlewares[m]
 		if !ok {
 			logger.Errorw("can not find middleware", "m", m)
@@ -63,8 +62,16 @@ func (s *AppServer) InstallMiddlewares() {
 	}
 }
 
+// Healthz 检测健康
+func (s *AppServer) Healthz() {
+	r := s.Engine
+	r.GET("/healthz", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, http.StatusText(http.StatusOK))
+	})
+}
+
 func (s *AppServer) PreRun(router http.Handler) {
-	serverConfig := s.GlobalConfig.Server
+	serverConfig := s.serviceConfig
 	s.secureServer = &http.Server{
 		Addr:           fmt.Sprintf(":%s", serverConfig.Port),
 		Handler:        router,
@@ -75,6 +82,8 @@ func (s *AppServer) PreRun(router http.Handler) {
 }
 
 func (s *AppServer) Run() {
+	s.Engine = GenericEngineServer(s.serviceConfig)
+	s.InstallMiddlewares()
 }
 
 func (s *AppServer) Start(ctx context.Context) error {

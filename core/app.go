@@ -85,7 +85,8 @@ func (a *App) Run() error {
 	return a.ctr.Invoke(func(cfg *config.Config, dbs *db.Databases, api *controller.ApiHttp) error {
 		// 实例化 AppServer
 		httpServer := ginServer.NewAppServer(
-			cfg,
+			ginServer.WithServiceConfig(&cfg.Server),
+			ginServer.WithMiddleware(cfg.Server.Middlewares),
 			ginServer.Timeout(5*time.Second),
 		)
 		// PreRun

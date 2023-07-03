@@ -22,3 +22,9 @@ func WithMiddleware(middlewares []string) ServerOption {
 		s.middleware = middlewares
 	}
 }
+
+func WithServiceConfig(config *server.ServiceConfig) ServerOption {
+	return func(s *AppServer) {
+		s.serviceConfig = config
+	}
+}
