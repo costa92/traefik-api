@@ -10,6 +10,7 @@ import (
 
 	"treafik-api/config"
 	"treafik-api/pkg/logger"
+	"treafik-api/pkg/middlewares"
 	"treafik-api/pkg/server"
 )
 
@@ -34,6 +35,7 @@ type AppServer struct {
 
 	timeout      time.Duration
 	secureServer *http.Server
+	middleware   []string
 }
 
 func NewAppServer(cfg *config.Config, opts ...ServerOption) server.IAppServer {
@@ -44,8 +46,21 @@ func NewAppServer(cfg *config.Config, opts ...ServerOption) server.IAppServer {
 	for _, o := range opts {
 		o(appSrv)
 	}
+	appSrv.InstallMiddlewares()
 	appSrv.Run()
 	return appSrv
+}
+
+func (s *AppServer) InstallMiddlewares() {
+	for _, m := range s.GlobalConfig.Server.Middlewares {
+		mw, ok := middlewares.Middlewares[m]
+		if !ok {
+			logger.Errorw("can not find middleware", "m", m)
+			continue
+		}
+		logger.Infow("install middleware", "m", m)
+		s.Engine.Use(mw)
+	}
 }
 
 func (s *AppServer) PreRun(router http.Handler) {
@@ -72,7 +87,7 @@ func (s *AppServer) Start(ctx context.Context) error {
 	logger.Infow("[HTTP] server started", "listen_addr", s.secureServer.Addr)
 	// http 启动
 	if err := secureServer.ListenAndServe(); err != nil {
-		logger.Fatalf("secureServer ListenAndServe failed", "err", err)
+		logger.Fatalw("secureServer ListenAndServe failed", "err", err)
 		return err
 	}
 	return nil

@@ -16,3 +16,9 @@ func Timeout(timeout time.Duration) ServerOption {
 		s.timeout = timeout
 	}
 }
+
+func WithMiddleware(middlewares []string) ServerOption {
+	return func(s *AppServer) {
+		s.middleware = middlewares
+	}
+}
