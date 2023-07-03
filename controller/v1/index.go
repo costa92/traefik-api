@@ -3,19 +3,20 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 
-	"treafik-api/core"
+	"treafik-api/db"
+	"treafik-api/pkg/utils"
 )
 
 type Index struct {
-	MysqlDb *core.MysqlDb
+	MysqlDb *db.Databases
 }
 
-func NewIndex(mysqlDb *core.MysqlDb) *Index {
+func NewIndex(mysqlDb *db.Databases) *Index {
 	return &Index{
 		MysqlDb: mysqlDb,
 	}
 }
 
 func (a *Index) Index(ctx *gin.Context) {
-	ctx.JSON(200, "success")
+	utils.WriteSuccessResponse(ctx, "success")
 }

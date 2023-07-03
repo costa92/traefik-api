@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"treafik-api/core"
+	"treafik-api/db"
 )
 
 var serverCmd = &cobra.Command{
@@ -11,7 +12,7 @@ var serverCmd = &cobra.Command{
 	Short: "Start the server",
 	Long:  "Start the server",
 	Run: func(cmd *cobra.Command, args []string) {
-		_, err := core.NewDatabases(AppConfig)
+		_, err := db.NewDatabases(AppConfig)
 		if err != nil {
 			panic(err)
 		}

@@ -44,14 +44,12 @@ func NewAppServer(cfg *config.Config, opts ...ServerOption) server.IAppServer {
 	for _, o := range opts {
 		o(appSrv)
 	}
-	appSrv.PreRun()
 	appSrv.Run()
 	return appSrv
 }
 
-func (s *AppServer) PreRun() {
+func (s *AppServer) PreRun(router http.Handler) {
 	serverConfig := s.GlobalConfig.Server
-	router := s.Engine
 	s.secureServer = &http.Server{
 		Addr:           fmt.Sprintf(":%s", serverConfig.Port),
 		Handler:        router,
@@ -71,7 +69,6 @@ func (s *AppServer) Start(ctx context.Context) error {
 		}
 	}()
 	secureServer := s.secureServer
-
 	logger.Infow("[HTTP] server started", "listen_addr", s.secureServer.Addr)
 	// http 启动
 	if err := secureServer.ListenAndServe(); err != nil {

@@ -10,7 +10,7 @@ log:
   level: info
 
 mysql:
-  dns: root:s0kewK7Ph#0AE9IX@tcp(127.0.0.1:3306)/blog?collation=utf8mb4_unicode_ci&parseTime=true&loc=Local&timeout=10s&readTimeout=30s&writeTimeout=30s
+  dns: app_rw_im:im0ARqtl37J0K6H@tcp(10.40.2.7:3306)/HT_IMDB?collation=utf8mb4_unicode_ci&parseTime=true&loc=Local&timeout=10s&readTimeout=30s&writeTimeout=30s
   max_open_count: 50
   max_idle_count: 50
   tracing: false

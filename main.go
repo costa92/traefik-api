@@ -19,7 +19,6 @@ func main() {
 		theApp.Shutdown()
 		return
 	}
-
 	// 信号清除
 	chSig := make(chan os.Signal, 1)
 	signal.Notify(chSig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)

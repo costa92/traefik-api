@@ -6,10 +6,13 @@ import (
 	"go.uber.org/dig"
 
 	"treafik-api/config"
-	config2 "treafik-api/pkg/common/config"
+	"treafik-api/controller"
+	"treafik-api/db"
+	commonConfig "treafik-api/pkg/common/config"
 	logger2 "treafik-api/pkg/logger"
 	"treafik-api/pkg/server"
-	gin_server "treafik-api/pkg/server/gin-server"
+	ginServer "treafik-api/pkg/server/gin-server"
+	"treafik-api/routers"
 )
 
 type App struct {
@@ -31,11 +34,19 @@ func (a *App) buildContainer() error {
 	if err := container.Provide(newConfig); err != nil {
 		return err
 	}
-	if err := container.Provide(NewDatabases); err != nil {
+	if err := container.Provide(db.NewDatabases); err != nil {
+		return err
+	}
+	if err := container.Provide(initApi); err != nil {
 		return err
 	}
 	a.ctr = container
 	return nil
+}
+
+func initApi(cfg *config.Config, dbs *db.Databases) (*controller.ApiHttp, error) {
+	apiHttp := controller.NewApiHttp(cfg, dbs)
+	return apiHttp, nil
 }
 
 // newConfig 初始化配置
@@ -43,14 +54,14 @@ func newConfig() *config.Config {
 	var dotGraph bool
 	var cfg config.Config
 	initCfgLogger := initLogger()
-	err := config2.New(
-		config2.WithProviders(&config2.FileProvider{
+	err := commonConfig.New(
+		commonConfig.WithProviders(&commonConfig.FileProvider{
 			SkipIfPathEmpty: true,
 		}),
-		config2.WithRegisterFlags(func(flag *config2.FlagSet) {
+		commonConfig.WithRegisterFlags(func(flag *commonConfig.FlagSet) {
 			flag.BoolVar(&dotGraph, "graph", false, "parse the graph in Container into DOT format and writes it to stdout")
 		}),
-		config2.WithLogger(initCfgLogger),
+		commonConfig.WithLogger(initCfgLogger),
 	).Load(&cfg)
 	if err != nil {
 		panic(err)
@@ -65,18 +76,22 @@ func initLogger() logger2.Logger {
 	lc.OutputPaths = []string{"stderr"}
 	lc.DisableStacktrace = true
 	lc.EnableColor = true
-	lc.Encoding = string(config2.LogEncodingConsole)
+	lc.Encoding = string(commonConfig.LogEncodingConsole)
 	return logger2.NewLogger(lc)
 }
 
 // Run 运行配置
 func (a *App) Run() error {
-	return a.ctr.Invoke(func(cfg *config.Config, dbs *Databases) error {
+	return a.ctr.Invoke(func(cfg *config.Config, dbs *db.Databases, api *controller.ApiHttp) error {
 		// 实例化 AppServer
-		httpServer := gin_server.NewAppServer(
+		httpServer := ginServer.NewAppServer(
 			cfg,
-			gin_server.Timeout(5*time.Second),
+			ginServer.Timeout(5*time.Second),
 		)
+		// PreRun
+		engine := httpServer.(*ginServer.AppServer).Engine
+		routers.RegisterRouter(engine, api)
+		httpServer.PreRun(engine)
 		// 实例化 App
 		app := server.New(
 			server.Server(httpServer),
