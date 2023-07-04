@@ -55,9 +55,10 @@ func newConfig() *config.Config {
 	var cfg config.Config
 	initCfgLogger := initLogger()
 	err := commonConfig.New(
+		// 处理配置
 		commonConfig.WithProviders(&commonConfig.FileProvider{
 			SkipIfPathEmpty: true,
-		}),
+		}, &commonConfig.NacosProvider{}),
 		commonConfig.WithRegisterFlags(func(flag *commonConfig.FlagSet) {
 			flag.BoolVar(&dotGraph, "graph", false, "parse the graph in Container into DOT format and writes it to stdout")
 		}),

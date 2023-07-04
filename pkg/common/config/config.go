@@ -22,6 +22,13 @@ type FlagParseResult interface {
 }
 
 const (
+	EnvNacosHost      = "NACOS_HOST"
+	EnvNacosNamespace = "NACOS_NAMESPACE"
+	EnvNacosPort      = "NACOS_PORT"
+	EnvNacosGroup     = "NACOS_GROUP"
+	EnvNacosDataID    = "NACOS_DATAID"
+	EnvNacosLogLevel  = "NACOS_LOG_LEVEL"
+
 	FlagConfigFile = "config"
 	FlagDumpConfig = "dump"
 )
@@ -55,6 +62,7 @@ func (cl *ConfigLoader) Load(cfg interface{}) error {
 	} else {
 		flagResult = cl.defaultFlagParser()
 	}
+	cl.configFile = flagResult.ConfigFile()
 
 	if flagResult.ShowHelp() {
 		flagResult.Usage()()
@@ -120,7 +128,6 @@ func (cl *ConfigLoader) defaultFlagParser() FlagParseResult {
 	var configFile string
 	var dumpConfig bool
 	var showHelp, showVersion bool
-
 	commandLine := pflag.NewFlagSet(os.Args[0], pflag.ExitOnError)
 	// use standalone instead of shared default pflag.CommandLine avoid "pflag redefined: config" error when unit tests
 	commandLine.Usage = func() {
@@ -154,6 +161,7 @@ func (cl *ConfigLoader) getConfigViaProviders(cfg interface{}) error {
 		configFile: cl.configFile,
 		log:        cl.options.logger,
 	}
+
 	for _, provider := range cl.options.providers {
 		_, err = provider.Config(helper, cfg)
 		if err == nil {

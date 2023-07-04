@@ -2,8 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 
@@ -26,23 +24,27 @@ var _ Provider = &FileProvider{}
 
 func (p *FileProvider) Config(helper *providerHelper, cfg interface{}) ([]byte, error) {
 	configFile := helper.configFile
-	initConfig(configFile, cfg)
+	err := initConfig(configFile, cfg)
+	if err != nil {
+		return nil, err
+	}
 	return nil, nil
 }
 
-func initConfig(cfgFile string, cfg interface{}) {
+func initConfig(cfgFile string, cfg interface{}) error {
 	// 加載配置文件
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile) // 指定配置文件名
 		// 如果配置文件名中没有文件扩展名，则需要指定配置文件的格式，告诉viper以何种格式解析文件
 		viper.SetConfigType("yaml")
 	} else {
-		viper.AddConfigPath(".")
+		//viper.AddConfigPath(".")
 		viper.AddConfigPath("../")
-		viper.AddConfigPath("")
+		//viper.AddConfigPath("")
 		home, err := homedir.Dir()
 		if err != nil {
-			panic(err)
+			logger.Errorw("homedir.Dir", "err", err)
+			return err
 		}
 		viper.AddConfigPath(home)
 		viper.SetConfigName("config") // 指定配置文件名
@@ -51,13 +53,15 @@ func initConfig(cfgFile string, cfg interface{}) {
 	viper.AutomaticEnv()
 	// 读取配置文件。如果指定了配置文件名，则使用指定的配置文件，否则在注册的搜索路径中搜索
 	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		logger.Errorw("Fatal error config file", "err", err)
+		return err
 	}
 	logger.Infow("config file", "path", viper.ConfigFileUsed())
 	// 解析配置信息
 	err := viper.Unmarshal(cfg)
 	logger.Infow("config file content:", "config", cfg)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
