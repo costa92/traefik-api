@@ -1,5 +1,7 @@
 package config
 
+import "treafik-api/pkg/common/version"
+
 // log
 
 type LogEncoding string
@@ -48,7 +50,5 @@ func (l *LogConfig) GetDisableStacktrace() bool {
 }
 
 func (l *LogConfig) GetInitialFields() map[string]interface{} {
-	return map[string]interface{}{
-		"app_name": "app_server",
-	}
+	return version.InitialFields()
 }

@@ -8,7 +8,8 @@ import (
 
 	"github.com/spf13/pflag"
 	"go.uber.org/zap"
-	"honnef.co/go/tools/version"
+
+	"treafik-api/pkg/common/version"
 )
 
 var ErrEmptyConfig = errors.New("get empty config")
@@ -39,15 +40,25 @@ type ConfigLoader struct {
 }
 
 func New(opts ...Option) *ConfigLoader {
-	options := options{
-		usage:            fmt.Sprintf("Usage: %s [Options]", "v1"),
-		shortDescription: fmt.Sprintf("%s %s", "ServiceName", "info"),
+	newOpts := options{
+		usage:            fmt.Sprintf("Usage: %s [Options]", version.ServiceName),
+		shortDescription: fmt.Sprintf("%s %s", version.ServiceName, version.Info()),
 	}
 	for _, o := range opts {
-		o.apply(&options)
+		o.apply(&newOpts)
 	}
+
+	// allow override version.ServiceName via options
+	if newOpts.serviceName != "" {
+		version.ServiceName = newOpts.serviceName
+	}
+	// allow override version.Version via options
+	if newOpts.serviceVersion != "" {
+		version.Version = newOpts.serviceVersion
+	}
+
 	return &ConfigLoader{
-		options: options,
+		options: newOpts,
 	}
 }
 
@@ -70,14 +81,14 @@ func (cl *ConfigLoader) Load(cfg interface{}) error {
 	}
 
 	if flagResult.ShowVersion() {
-		fmt.Println("v1")
+		fmt.Println(version.Print(version.ServiceName))
 		os.Exit(0)
 	}
 	// 日志
 	if cl.options.logger == nil {
 		zapCfg := zap.NewProductionConfig()
 		zapCfg.InitialFields = map[string]interface{}{
-			"service": "ServiceName",
+			"service": version.ServiceName,
 			"version": version.Version,
 		}
 		zapCfg.OutputPaths = []string{"stderr"}

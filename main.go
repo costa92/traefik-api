@@ -8,11 +8,14 @@ import (
 	"time"
 
 	"treafik-api/core"
+	"treafik-api/pkg/common/version"
 	"treafik-api/pkg/logger"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+	version.MustRegisterVersionCollector()
+
 	theApp, err := core.NewApp()
 	if err != nil {
 		logger.Errorw("app start failed", "err", err)

@@ -63,6 +63,7 @@ func newConfig() *config.Config {
 			flag.BoolVar(&dotGraph, "graph", false, "parse the graph in Container into DOT format and writes it to stdout")
 		}),
 		commonConfig.WithLogger(initCfgLogger),
+		commonConfig.WithServiceName("traefik-api"),
 	).Load(&cfg)
 	if err != nil {
 		panic(err)

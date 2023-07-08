@@ -1,13 +1,13 @@
 package config
 
 import (
-	remote "github.com/yoyofxteam/nacos-viper-remote"
 	"os"
 	"strconv"
+
+	remote "github.com/yoyofxteam/nacos-viper-remote"
 )
 
-type NacosProvider struct {
-}
+type NacosProvider struct{}
 
 func (p *NacosProvider) Name() string {
 	return "nacos"

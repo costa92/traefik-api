@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 
@@ -23,8 +24,13 @@ func (p *FileProvider) Name() string {
 var _ Provider = &FileProvider{}
 
 func (p *FileProvider) Config(helper *providerHelper, cfg interface{}) ([]byte, error) {
-	configFile := helper.configFile
-	err := initConfig(configFile, cfg)
+	var configPath string
+	if p.DefaultConfigPath != "" {
+		configPath = p.DefaultConfigPath
+	} else if helper.configFile != "" {
+		configPath = helper.configFile
+	}
+	err := initConfig(configPath, cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -38,9 +44,9 @@ func initConfig(cfgFile string, cfg interface{}) error {
 		// 如果配置文件名中没有文件扩展名，则需要指定配置文件的格式，告诉viper以何种格式解析文件
 		viper.SetConfigType("yaml")
 	} else {
-		//viper.AddConfigPath(".")
+		// viper.AddConfigPath(".")
 		viper.AddConfigPath("../")
-		//viper.AddConfigPath("")
+		// viper.AddConfigPath("")
 		home, err := homedir.Dir()
 		if err != nil {
 			logger.Errorw("homedir.Dir", "err", err)

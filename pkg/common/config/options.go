@@ -33,6 +33,9 @@ type options struct {
 	logger           Logger
 	registerFlags    RegisterFlags
 	providers        []Provider // file, nacos, text
+
+	serviceName    string
+	serviceVersion string
 }
 
 type Option interface {
@@ -80,5 +83,17 @@ func WithProviders(opt ...Provider) Option {
 func WithLogger(opt Logger) Option {
 	return optionFunc(func(o *options) {
 		o.logger = opt
+	})
+}
+
+func WithServiceName(opt string) Option {
+	return optionFunc(func(o *options) {
+		o.serviceName = opt
+	})
+}
+
+func WithServiceVersion(opt string) Option {
+	return optionFunc(func(o *options) {
+		o.serviceVersion = opt
 	})
 }
