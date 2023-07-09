@@ -11,4 +11,5 @@ type Config struct {
 	MySQL  databases.MysqlDBConfig `json:"mysql" yaml:"mysql"  toml:"mysql"`
 	Redis  databases.RedisConfig   `json:"redis" yaml:"redis" toml:"redis"`
 	Log    config.LogConfig        `json:"log" yaml:"log" toml:"log"`
+	Jwt    server.AuthJwt          `json:"jwt" yaml:"jwt" toml:"jwt"`
 }

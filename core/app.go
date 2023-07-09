@@ -93,6 +93,8 @@ func (a *App) Run() error {
 		)
 		// PreRun
 		engine := httpServer.(*ginServer.AppServer).Engine
+		// 扩展项目单独的中间件
+		// engine.Use()
 		// 路由注册
 		routers.RegisterRouter(engine, api)
 		httpServer.PreRun(engine)
@@ -106,4 +108,5 @@ func (a *App) Run() error {
 }
 
 func (a *App) Shutdown() {
+	logger2.Infow("Service stop")
 }

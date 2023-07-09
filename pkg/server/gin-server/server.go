@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/costa92/errors"
 	"github.com/gin-gonic/gin"
 
-	"treafik-api/config"
 	"treafik-api/pkg/logger"
-	"treafik-api/pkg/middlewares"
 	"treafik-api/pkg/server"
+	"treafik-api/pkg/server/gin-server/middlewares"
 )
 
 func GenericEngineServer(serverConfig *server.ServiceConfig) *gin.Engine {
@@ -29,10 +29,8 @@ func GenericEngineServer(serverConfig *server.ServiceConfig) *gin.Engine {
 }
 
 type AppServer struct {
-	GlobalConfig *config.Config
-	Logger       logger.Logger
-	Engine       *gin.Engine
-
+	Logger        logger.Logger
+	Engine        *gin.Engine
 	timeout       time.Duration
 	secureServer  *http.Server
 	serviceConfig *server.ServiceConfig
@@ -96,8 +94,10 @@ func (s *AppServer) Start(ctx context.Context) error {
 	logger.Infow("[HTTP] server started", "listen_addr", s.secureServer.Addr)
 	// http 启动
 	if err := secureServer.ListenAndServe(); err != nil {
-		logger.Fatalw("secureServer ListenAndServe failed", "err", err)
-		return err
+		if !errors.Is(err, http.ErrServerClosed) { // 如果是关闭状态，不当异常处理
+			logger.Fatalw("secureServer ListenAndServe failed", "err", err)
+			return err
+		}
 	}
 	return nil
 }

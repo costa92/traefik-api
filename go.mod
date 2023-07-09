@@ -2,6 +2,8 @@ module treafik-api
 
 go 1.19
 
+replace github.com/costa92/errors v0.0.2 => /Users/costalong/code/go/src/github.com/costa92/errors
+
 require (
 	github.com/costa92/errors v0.0.2
 	github.com/gin-contrib/cors v1.4.0
@@ -48,6 +50,7 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/go-redis/redis/extra/rediscmd/v8 v8.11.5 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

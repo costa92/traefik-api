@@ -9,3 +9,9 @@ type ServiceConfig struct {
 	Mode         string   `json:"mode" yaml:"mode" toml:"mode" json:"mode,omitempty"`
 	Middlewares  []string `json:"middlewares" yaml:"middlewares" toml:"middlewares" json:"middlewares,omitempty"`
 }
+
+// AuthJwt 认证配置
+type AuthJwt struct {
+	AppSecret  string `json:"app_secret" yaml:"app_secret" toml:"app_secret"`
+	ExportTime int    `json:"export_time" yaml:"export_time" toml:"export_time"`
+}

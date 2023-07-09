@@ -5,4 +5,6 @@ func init() {
 	register(ErrSuccess, 200, "OK")
 	register(ErrUnknown, 500, "Internal server error")
 	register(ErrBind, 400, "Error occurred while binding the request body to the struct")
+
+	register(ErrAuthParams, 200, "账号密码不能为空")
 }

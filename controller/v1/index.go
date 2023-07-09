@@ -20,3 +20,7 @@ func NewIndex(mysqlDb *db.Databases) *Index {
 func (a *Index) Index(ctx *gin.Context) {
 	utils.WriteSuccessResponse(ctx, "success")
 }
+
+func (a *Index) Update(ctx *gin.Context) {
+	utils.WriteSuccessResponse(ctx, "success")
+}

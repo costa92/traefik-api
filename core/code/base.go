@@ -12,3 +12,7 @@ const (
 	// ErrBind - 400: Error occurred while binding the request body to the struct.
 	ErrBind
 )
+
+const (
+	ErrAuthParams int = iota + 100021
+)

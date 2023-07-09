@@ -6,6 +6,10 @@ server:
   write_timeout: 60
   middlewares: recovery,cors
 
+jwt:
+  app_secret: 1111
+  export_time: 1
+
 log:
   debug: true
   level: info
