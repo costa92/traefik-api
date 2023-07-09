@@ -21,7 +21,7 @@ func NewAuth(dbs *db.Databases) *Auth {
 
 type LoginRequest struct {
 	Username string `json:"username,omitempty" bind:"username"`
-	Password string `json:"password" bson:"password"`
+	Password string `json:"password" bind:"password"`
 }
 
 func (a *Auth) Login(ctx *gin.Context) {
@@ -31,6 +31,7 @@ func (a *Auth) Login(ctx *gin.Context) {
 		utils.WriteErrResponse(ctx, errors.WithCode(code.ErrBind, "账号密码错误"))
 		return
 	}
+
 	if req.Username == "" || req.Password == "" {
 		utils.WriteErrResponse(ctx, errors.WithCode(code.ErrAuthParams, "账号密码错误"))
 		return
