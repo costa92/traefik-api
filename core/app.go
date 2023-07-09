@@ -50,7 +50,7 @@ func initApi(cfg *config.Config, dbs *db.Databases) (*controller.ApiHttp, error)
 }
 
 // newConfig 初始化配置
-func newConfig() *config.Config {
+func newConfig() (*config.Config, error) {
 	var dotGraph bool
 	var cfg config.Config
 	initCfgLogger := initLogger()
@@ -58,7 +58,7 @@ func newConfig() *config.Config {
 		// 处理配置
 		commonConfig.WithProviders(&commonConfig.FileProvider{
 			SkipIfPathEmpty: true,
-		}, &commonConfig.NacosProvider{}),
+		}),
 		commonConfig.WithRegisterFlags(func(flag *commonConfig.FlagSet) {
 			flag.BoolVar(&dotGraph, "graph", false, "parse the graph in Container into DOT format and writes it to stdout")
 		}),
@@ -66,11 +66,12 @@ func newConfig() *config.Config {
 		commonConfig.WithServiceName("traefik-api"),
 	).Load(&cfg)
 	if err != nil {
-		panic(err)
+		logger2.Errorw("App load config failed", "err", err)
+		return nil, err
 	}
 	// init app logger
 	logger2.SetConfig(logger2.NewConfigFromInterface(&cfg.Log))
-	return &cfg
+	return &cfg, nil
 }
 
 func initLogger() logger2.Logger {

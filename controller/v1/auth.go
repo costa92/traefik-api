@@ -31,6 +31,5 @@ func (a *Auth) Login(ctx *gin.Context) {
 		utils.WriteErrResponse(ctx, errors.WithCode(code.ErrBind, "账号密码错误"))
 		return
 	}
-
 	utils.WriteSuccessResponse(ctx, "3213")
 }

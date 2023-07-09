@@ -11,6 +11,8 @@ require (
 	github.com/go-redis/redis/extra/redisotel/v8 v8.11.5
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.7.0
+	github.com/golang-jwt/jwt/v5 v5.0.0
+	github.com/google/wire v0.5.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/novalagung/gubrak v1.0.0
 	github.com/prometheus/client_golang v1.16.0
@@ -50,8 +52,8 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/go-redis/redis/extra/rediscmd/v8 v8.11.5 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/google/subcommands v1.0.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -71,6 +73,7 @@ require (
 	github.com/nacos-group/nacos-sdk-go v1.0.7 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
@@ -87,9 +90,11 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
+	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/tools v0.6.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

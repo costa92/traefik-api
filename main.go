@@ -15,7 +15,6 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	version.MustRegisterVersionCollector()
-
 	theApp, err := core.NewApp()
 	if err != nil {
 		logger.Errorw("app start failed", "err", err)
