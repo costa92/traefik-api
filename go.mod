@@ -2,7 +2,7 @@ module treafik-api
 
 go 1.19
 
-replace github.com/costa92/errors v0.0.2 => /Users/costalong/code/go/src/github.com/costa92/errors
+//replace github.com/costa92/errors v0.0.2 => /Users/costalong/code/go/src/github.com/costa92/errors
 
 require (
 	github.com/costa92/errors v0.0.2
